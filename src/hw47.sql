@@ -15,6 +15,9 @@ from orders o;
 select max(oi.unit_price)
 from order_item oi;
 
+select max(o.total_amount)
+from orders o;
+
 select sum(o.total_amount)
 from orders o;
 
@@ -47,7 +50,7 @@ where c.country like 'Spain'
    or c.country like 'France'
 order by c.country desc;
 
-select c.first_name, c.last_name, c.country, s.country
+select distinct c.first_name, c.last_name, c.country, s.country
 from customer c
          inner join supplier s on c.city = s.city
 where s.country = c.country
@@ -87,7 +90,14 @@ from customer c
 group by c.country
 order by count(c.city) desc;
 
-select oi.id = 5, p.supplier_id, c.first_name, c.last_name, c.city, p.product_name, p.unit_price, s.contact_name
+select (oi.id,
+        p.supplier_id,
+        c.first_name,
+        c.last_name) as c,
+       c.city,
+       p.product_name,
+       p.unit_price,
+       s.contact_name
 from order_item oi
          inner join product p on oi.product_id = p.id
          inner join orders o on oi.order_id = o.id
@@ -95,8 +105,39 @@ from order_item oi
          inner join supplier s on p.supplier_id = s.id
 limit 1;
 
-select s.company_name, s.contact_name, s.contact_title from supplier s
-left outer join product p on s.id = p.supplier_id;
+select * from product p
+                  inner join supplier s on p.supplier_id = s.id
+where s.id = 16;
 
-select p.product_name, oi.order_id, oi.product_id from product p
-inner join order_item oi on p.id = oi.product_id
+select s.id,s.company_name, s.contact_name, s.contact_title
+from supplier s
+         left outer join product p on s.id = p.supplier_id;
+
+select p.product_name, oi.order_id, oi.product_id
+from product p
+         inner join order_item oi on p.id = oi.product_id;
+
+select p.id, p.product_name from orders o
+                                     inner join order_item oi on o.id = oi.order_id
+                                     inner join product p on oi.product_id = p.id;
+
+select count(p.id) from orders o
+                            inner join order_item oi on o.id = oi.order_id
+                            right join product p on oi.product_id = p.id
+where oi.product_id is null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
